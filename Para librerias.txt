@@ -1,0 +1,5 @@
+Here's a list of the programs you can install on windows:
+
+http://www.lfd.uci.edu/~gohlke/pythonlibs/
+
+And you'll need the following dependencies: Requires numpy, dateutil, pytz, pyparsing, six
