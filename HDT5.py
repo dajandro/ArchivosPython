@@ -3,11 +3,11 @@
 #Pablo Diaz 13203
 #Daniel Orozco 13312
 #Programa que simula una CPU
-#Recursos: Colas
+#Recursos: Resource
 
 from SimPy.Simulation import *
 from random import uniform, expovariate, Random,seed
-from Grafica import *
+#from Grafica import * descomentar esta linea y la ultima del programa para mostrar grafica
 from math import *
 
 
@@ -17,14 +17,15 @@ class Computadora(Process):
         self.id=id  #se le coloca un número como identidad
 
     def Run(self,CPU,velocidad,tiempoHold,wt):
+        print "%s RAM asignada" %(self.id)
         yield hold,self,velocidad  #toma ese tiempo llegar
         self.llega = now()
         yield request,self,CPU #busca un espacio, si no hay debe hacer cola (depende de la capacidad)
-        print "%5.1f %s entra en cola" %(now(),self.id) 
+        print "%5.1f %s esperando en cola" %(now(),self.id) 
         yield hold,self,tiempoHold #ocupa el parqueo el tiempo de parkTime
         tiempoTotal = now() - self.llega
         wt.observe(tiempoTotal)
-        print "%5.1f %s sale de cola después de %5.1f en cola, Tiempo total=%5.1f" %(now(),self.id,tiempoHold,tiempoTotal)
+        print "%5.1f %s libera RAM después de %5.1f en cola, Tiempo total=%5.1f" %(now(),self.id,tiempoHold,tiempoTotal)
         yield release,self,CPU #desocupa la cola 
 
 
@@ -46,7 +47,7 @@ RAM=100
 numeroProcesos=25 #constante
 numeroCPU=1     #variable
 velocidadCPU=3   #variable
-intervalo=10.0   #variable
+intervalo=1.0   #variable
 wt = Monitor()     
 
 def model(runSeed=theSeed,procesos=numeroProcesos):                       
@@ -75,20 +76,20 @@ for Sd in semilla:
     print("Tiempo de espera medio %6.2f unidades de tiempo con desviación estándar de %3d" % result)
     
                     
-#--------------------------DATOS PRUEBA 2------------------
+#--------------------DATOS PRUEBA 2---------------------------
 theSeed=12345
 media2=[]
 desviacion2=[]
-RAM=100
-numeroProcesos=25
+RAM=200            #se incrementa la memoria
+numeroProcesos=25  #constante
 numeroCPU=1     #variable
 velocidadCPU=3   #variable
-intervalo=5.0   #variable cambia intervalo
+intervalo=1.0   #variable
 wt = Monitor()     
 
 
 
-#---------------------SIMULACION PRUEBA 2------------------
+#-------------------SIMULACION PRUEBA 2---------------------
 semilla=[393939, 31555999, 777999555, 319999771,1827488282]
 for Sd in semilla:
     result = model(Sd,numeroProcesos)
@@ -100,20 +101,20 @@ for Sd in semilla:
     desviacion2.append(result[1])
     print("Tiempo de espera medio %6.2f unidades de tiempo con desviación estándar de %3d" % result)
 
-#----------------------DATOS PRUEBA 3---------------------------
+#----------------DATOS PRUEBA 3-----------------------------
 theSeed=12345
 media3=[]
 desviacion3=[]
-RAM=200          #aumentar RAM
-numeroProcesos=25 #constante
+RAM=100
+numeroProcesos=25 
 numeroCPU=1     #variable
-velocidadCPU=3   #variable
-intervalo=1.0   #variable cambia intervalo
+velocidadCPU=6   #variable cambia el numero de instrucciones que ejecuta por unidad de tiempo
+intervalo=1.0   #variable
 wt = Monitor()     
 
 
 
-#---------------------SIMULACION PRUEBA 3---------------------
+#----------------------------SIMULACION PRUEBA 3---------------
 semilla=[393939, 31555999, 777999555, 319999771,1827488282]
 for Sd in semilla:
     result = model(Sd,numeroProcesos)
@@ -125,20 +126,21 @@ for Sd in semilla:
     desviacion3.append(result[1])
     print("Tiempo de espera medio %6.2f unidades de tiempo con desviación estándar de %3d" % result)
 
-#--------------------DATOS PRUEBA 4---------------------------
+
+#----------------DATOS PRUEBA 4-----------------------------
 theSeed=12345
 media4=[]
 desviacion4=[]
-RAM=200            #se incrementa la memoria
-numeroProcesos=25  #constante
-numeroCPU=1     #variable
+RAM=100
+numeroProcesos=25 
+numeroCPU=2     #variable aumenta el numero de procesadores
 velocidadCPU=3   #variable
-intervalo=10.0   #variable
+intervalo=1.0   #variable
 wt = Monitor()     
 
 
 
-#-------------------SIMULACION PRUEBA 4---------------------
+#----------------------------SIMULACION PRUEBA 4---------------
 semilla=[393939, 31555999, 777999555, 319999771,1827488282]
 for Sd in semilla:
     result = model(Sd,numeroProcesos)
@@ -150,66 +152,14 @@ for Sd in semilla:
     desviacion4.append(result[1])
     print("Tiempo de espera medio %6.2f unidades de tiempo con desviación estándar de %3d" % result)
 
-#----------------DATOS PRUEBA 5-----------------------------
-theSeed=12345
-media5=[]
-desviacion5=[]
-RAM=100
-numeroProcesos=25 
-numeroCPU=1     #variable
-velocidadCPU=6   #variable cambia el numero de instrucciones que ejecuta por unidad de tiempo
-intervalo=10.0   #variable
-wt = Monitor()     
-
-
-
-#----------------------------SIMULACION PRUEBA 5---------------
-semilla=[393939, 31555999, 777999555, 319999771,1827488282]
-for Sd in semilla:
-    result = model(Sd,numeroProcesos)
-    if Sd==393939:
-        numeroProcesos+=75
-    else:
-        numeroProcesos+=50
-    media5.append(result[0])
-    desviacion5.append(result[1])
-    print("Tiempo de espera medio %6.2f unidades de tiempo con desviación estándar de %3d" % result)
-
-
-#----------------DATOS PRUEBA 6-----------------------------
-theSeed=12345
-media6=[]
-desviacion6=[]
-RAM=100
-numeroProcesos=25 
-numeroCPU=2     #variable aumenta el numero de procesadores
-velocidadCPU=3   #variable
-intervalo=10.0   #variable
-wt = Monitor()     
-
-
-
-#----------------------------SIMULACION PRUEBA 6---------------
-semilla=[393939, 31555999, 777999555, 319999771,1827488282]
-for Sd in semilla:
-    result = model(Sd,numeroProcesos)
-    if Sd==393939:
-        numeroProcesos+=75
-    else:
-        numeroProcesos+=50
-    media6.append(result[0])
-    desviacion6.append(result[1])
-    print("Tiempo de espera medio %6.2f unidades de tiempo con desviación estándar de %3d" % result)
-
 
 #--------------------------MOSTRAR RESULTADOS GRÁFICOS---------------------
 
 #argumentos: la media y desviacion estándar de cada prueba
 #no devuelve nada
-DiagramaBarras(media1,desviacion1,media2,desviacion2,
-               media3,desviacion3,media4,desviacion4,
-               media5,desviacion5,media6,desviacion6)
-
+#descomentar la siguiente linea para mostrar el diagrama de barras
+#DiagramaBarras(media1,desviacion1,media2,desviacion2,
+#               media3,desviacion3,media4,desviacion4)
 
                     
 
